@@ -3,6 +3,12 @@ module.exports = {
   env: {
     node: true,
   },
+  parserOptions: {
+    ecmaVersion: 2020,
+    ecmaFeatures: {
+      jsx: true,
+    },
+  },
   extends: ['plugin:vue/vue3-recommended', '@vue/typescript/recommended', 'prettier'],
   plugins: ['prettier'],
   rules: {
