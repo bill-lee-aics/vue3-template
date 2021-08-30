@@ -31,7 +31,11 @@ TBD
 
 - [Windi Css](https://windicss.org/)
 
+## JSX
+
+- enabled by `@vitejs/plugin-vue-jsx`
+- styling jsx component by [jss](https://cssinjs.org/) provided by [vue-jss](https://github.com/BestVue3/vue-jss)
+
 ## Others
 
-- jsx enabled by `@vitejs/plugin-vue-jsx`
 - linted by `eslint` and `prettier`
