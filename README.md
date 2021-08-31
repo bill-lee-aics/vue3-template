@@ -19,6 +19,10 @@ Since TypeScript cannot handle type information for `.vue` imports, they are shi
 - [jest](https://jestjs.io/) + [testing-library](https://testing-library.com/docs/vue-testing-library/intro)
 - checkout `jest.config.ts` and `setupTest.ts` for configurations
 
+Why put test together with source code?
+- no need to maintain another folder structure in test folder
+- intuitively remind other developer to update test with source code changes
+
 ```
 pnpm test
 ```
@@ -29,12 +33,14 @@ TBD
 
 ## Css Utility
 
-- [Windi Css](https://windicss.org/)
+- [Windi Css](https://windicss.org/) ([VSCode plugin](https://marketplace.visualstudio.com/items?itemName=voorjaar.windicss-intellisense))
 
 ## JSX
+[Why use jsx in vue3?](https://www.bestvue3.com/blogs/why-jsx)
 
 - enabled by `@vitejs/plugin-vue-jsx`
 - styling jsx component by [jss](https://cssinjs.org/) provided by [vue-jss](https://github.com/BestVue3/vue-jss)
+- jest supported by `@vue/babel-plugin-jsx` (there is no native typescript support for vue jsx)
 
 ## Others
 
