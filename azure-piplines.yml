@@ -1,0 +1,82 @@
+name: $(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+variables:
+  isMaster: $[eq(variables['Build.SourceBranchName'], 'master')]
+
+parameters:
+- name: forceBuild
+  default: false
+  type: boolean
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-20.04'
+
+steps:
+- task: NodeTool@0
+  displayName: 'Install Node.js'
+  inputs:
+    versionSpec: '14.x'
+
+- task: CmdLine@2
+  displayName: 'update npm'
+  inputs:
+    script: |
+      npm i -g npm@7.x
+
+- task: Npm@1
+  inputs:
+    command: 'install'
+    customEndpoint: 'npm-aics-reg'
+
+- task: CmdLine@2
+  displayName: 'run unit test and generate report'
+  inputs:
+    script: 'npm run report'
+
+- task: PublishTestResults@2
+  displayName: 'Publish Test Results from test-results.xml'
+  inputs:
+    testResultsFiles: '**/test-results.xml'
+    failTaskOnFailedTests: true
+
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'SonarCloud'
+    organization: 'asus-aics'
+    scannerMode: 'CLI'
+    configMode: 'file'
+    extraProperties:
+
+- task: SonarCloudAnalyze@1
+
+- task: Npm@1
+  displayName: 'npm release'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: 'run release'
+  condition: and(succeeded(), or(eq('${{ parameters.forceBuild }}', true), eq(variables.isMaster, true)))
+
+# Below TBD
+
+- task: Docker@2
+  displayName: buildAndPush
+  inputs:
+    containerRegistry: 'aics-saas-his-registry'
+    repository: 'aics-pr-frontend'
+    tags: '$(Build.BuildNumber)'
+  condition: and(succeeded(), or(eq('${{ parameters.forceBuild }}', true), eq(variables.isMaster, true)))
+
+- task: CopyFiles@2
+  displayName: 'Copy Files'
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/helm'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+  condition: and(succeeded(), or(eq('${{ parameters.forceBuild }}', true), eq(variables.isMaster, true)))
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  condition: and(succeeded(), or(eq('${{ parameters.forceBuild }}', true), eq(variables.isMaster, true)))

@@ -6,7 +6,12 @@
     "build": "vue-tsc --noEmit && vite build",
     "serve": "vite preview",
     "lint": "eslint \"{tests,src}/**/*.{js,ts,vue}\" --quiet",
-    "test": "jest"
+    "test": "jest",
+    "report": "jest --coverage",
+    "copy:dist": "./node_modules/.bin/copyfiles -a dist/* dist/**/* release",
+    "copy:server": "./node_modules/.bin/copyfiles -a -f node_modules/@asus-aics/aicsapi-frontend-server/**/* node_modules/@asus-aics/aicsapi-frontend-server/* release",
+    "install:server": "npm install --prefix ./release",
+    "release": "npm run build && npm run copy:dist && npm run copy:server && npm run install:server"
   },
   "dependencies": {
     "jss": "^10.7.1",
@@ -31,6 +36,7 @@
     "@vue/eslint-config-typescript": "^7.0.0",
     "babel-jest": "^26",
     "babel-plugin-module-resolver": "^4.1.0",
+    "copyfiles": "^2.4.1",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.1",
